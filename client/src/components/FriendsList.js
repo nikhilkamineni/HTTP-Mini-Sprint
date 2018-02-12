@@ -3,13 +3,18 @@ import axios from 'axios';
 
 class FriendsList extends Component {
   state = {
-    friends: []
+    friends: [],
+    loading: true,
+    noData: true,
   };
 
   render() {
     return (
       <div>
         <div className="friend-title">Lambda Friends</div>
+        {this.state.loading && <div> Loading Friends...</div>}
+
+        {!this.state.loading && (
         <ul className="friend-grid">
           {this.state.friends.map(friend => {
             return (
@@ -21,16 +26,18 @@ class FriendsList extends Component {
             );
           })}
         </ul>
+      )}
       </div>
     );
   }
 
   componentDidMount() {
+    this.setState({ loading: true });
     axios
     .get('http://localhost:5000/friends')
     .then((response) => {
       console.log('data', response.data);
-      this.setState({friends: response.data})
+      this.setState({ friends: response.data, loading: false })
     })
     .catch((error) => {
       console.log('there was an error', error);
